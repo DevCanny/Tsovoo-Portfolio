@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSOOVOOOOOOOOOOOOOOOOO | Collection Details</title>
+    <style>
+        /* RESET & BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            overflow-x: hidden;
+            transition: background-color 0.5s;
+        }
+        
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            transform: rotate(-5deg);
+        }
+        
+        .menu-toggle {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff00ff;
+            color: #ff00ff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 15px;
+            position: relative;
+            z-index: 101;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px #000;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+        
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: left 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 100;
+        }
+        
+        .menu.active {
+            left: 0;
+        }
+        
+        .menu a {
+            color: #f0f0f0;
+            font-size: 2rem;
+            margin: 20px 0;
+            text-decoration: none;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 0px #000;
+        }
+        
+        .menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: #ff00ff;
+            transition: width 0.3s;
+        }
+        
+        .menu a:hover::after {
+            width: 100%;
+        }
+        
+        /* COLLECTION DETAILS */
+        .collection-details {
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff00ff;
+            color: #ff00ff;
+            font-size: 1rem;
+            padding: 10px 15px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transform: rotate(5deg);
+            transition: transform 0.3s, background-color 0.3s;
+            z-index: 90;
+        }
+        
+        .back-button:hover {
+            background-color: rgba(255, 0, 255, 0.3);
+            transform: rotate(-5deg);
+        }
+        
+        .collection-hero {
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            position: relative;
+            padding: 50px;
+            overflow: hidden;
+        }
+        
+        .collection-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            z-index: -1;
+            filter: brightness(0.7) contrast(1.2);
+        }
+        
+        .collection-title {
+            font-size: 5rem;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #f0f0f0;
+            text-shadow: 3px 3px 0px #ff00ff, -3px -3px 0px #00ffff;
+            transform: skew(-5deg);
+        }
+        
+        .collection-tagline {
+            font-size: 1.5rem;
+            text-align: center;
+            max-width: 800px;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+        
+        .collection-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+        
+        .collection-description {
+            margin-bottom: 80px;
+        }
+        
+        .collection-description h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ff00ff;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+        
+        .collection-description p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .designer-notes {
+            padding: 30px;
+            background-color: rgba(255, 0, 255, 0.1);
+            border: 3px solid #00ffff;
+            transform: skew(3deg);
+            margin-bottom: 80px;
+        }
+        
+        .designer-notes h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .designer-notes p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .gallery-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #ff00ff;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-align: center;
+            transform: rotate(-2deg);
+        }
+        
+        .items-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border: 5px solid #ff00ff;
+            transform: skew(-3deg);
+            transition: transform 0.3s, border-color 0.3s;
+            height: 450px;
+        }
+        
+        .gallery-item:hover {
+            transform: skew(0deg) scale(1.05);
+            border-color: #00ffff;
+            z-index: 2;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s;
+        }
+        
+        .gallery-item:hover img {
+            filter: saturate(1.5) contrast(1.2);
+        }
+        
+        .item-details {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover .item-details {
+            transform: translateY(0);
+        }
+        
+        .item-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #ff00ff;
+        }
+        
+        .item-details p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .item-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00ffff;
+        }
+        
+        .materials-section {
+            margin-top: 80px;
+            padding: 30px;
+            background-color: rgba(0, 255, 255, 0.1);
+            border: 3px solid #ff00ff;
+            transform: skew(-3deg);
+        }
+        
+        .materials-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff00ff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .materials-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .material {
+            flex: 1 1 300px;
+            margin-bottom: 20px;
+        }
+        
+        .material h3 {
+            font-size: 1.2rem;
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+        
+        .material p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        /* FOOTER */
+        footer {
+            padding: 50px 0;
+            background-color: #000;
+            text-align: center;
+        }
+        
+        .social-links {
+            margin-bottom: 30px;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 15px;
+            font-size: 1.5rem;
+            color: #ff00ff;
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: #00ffff;
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .copyright {
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .collection-title {
+                font-size: 3rem;
+            }
+            
+            .collection-tagline {
+                font-size: 1.2rem;
+            }
+            
+            .items-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .material {
+                flex: 0 0 100%;
+            }
+        }
+        
+        /* BACKGROUND NOISE EFFECT */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Noise -->
+    <div class="noise"></div>
+    
+    <!-- Back Button -->
+    <a href="index.html#collections" class="back-button">Back to Collections</a>
+    
+    <!-- Collection Details Content - This will be different for each collection -->
+    <section class="collection-details">
+        <!-- Hero Section -->
+        <div class="collection-hero">
+            <img src="https://placehold.co/1200x800/png" alt="Distorted Reality Collection" class="collection-bg">
+            <h1 class="collection-title">Distorted Reality</h1>
+            <p class="collection-tagline">Clothing that bends perception and warps space around the wearer.</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="collection-content">
+            <!-- Description -->
+            <div class="collection-description">
+                <h2>The Concept</h2>
+                <p>Distorted Reality examines our relationship with visual perception and spatial awareness. Each piece in this collection is designed to create optical illusions that confuse the eye and challenge conventional understanding of form and silhouette.</p>
+                <p>Inspired by the works of M.C. Escher and the philosophical concept of phenomenology, these garments explore how clothing can alter not just how we are perceived, but how we perceive ourselves and the space around us.</p>
+                <p>The collection features garments with impossible geometries, patterns that shift depending on viewing angle, and structural elements that seem to defy gravity. Fabrics have been developed with specialized printing techniques that create depth where there is none, and flatness where volume should exist.</p>
+            </div>
+            
+            <!-- Designer Notes -->
+            <div class="designer-notes">
+                <h2>Designer's Notes</h2>
+                <p>"I've always been fascinated by how the mind processes visual information and fills in gaps to create meaning. With Distorted Reality, I wanted to exploit this tendency—to create clothing that forces the viewer to constantly reinterpret what they're seeing."</p>
+                <p>"The production process was extraordinarily challenging. We had to develop entirely new pattern-cutting techniques and work with specialist printers to achieve the visual effects we were after. Many pieces went through dozens of iterations before the illusion worked correctly from all angles."</p>
+                <p>"My favorite piece is probably the 'Recursive Jacket,' which appears to fold in on itself infinitely when viewed in the right light. We used a combination of strategically placed mirrors and mathematically precise geometric patterns to create the effect."</p>
+            </div>
+            
+            <!-- Gallery -->
+            <h2 class="gallery-title">Key Pieces</h2>
+            <div class="items-gallery">
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x600/png" alt="Impossible Geometry Dress">
+                    <div class="item-details">
+                        <h3>Impossible Geometry Dress</h3>
+                        <p>A dress that features pattern-cutting that creates the illusion of contradictory spatial dimensions.</p>
+                        <p class="item-price">$1,950</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x600/png" alt="Recursive Jacket">
+                    <div class="item-details">
+                        <h3>Recursive Jacket</h3>
+                        <p>Features fractal-inspired patterns and strategic mirror placements that create an infinite visual loop.</p>
+                        <p class="item-price">$2,475</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x600/png" alt="Perspective Shift Trousers">
+                    <div class="item-details">
+                        <h3>Perspective Shift Trousers</h3>
+                        <p>Pants that appear to change dimension and proportion as the wearer moves through space.</p>
+                        <p class="item-price">$1,350</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x600/png" alt="Spatial Anomaly Blouse">
+                    <div class="item-details">
+                        <h3>Spatial Anomaly Blouse</h3>
+                        <p>A top that uses strategic pleating and printing to create impossible folds and dimensions.</p>
+                        <p class="item-price">$890</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x600/png" alt="Non-Euclidean Coat">
+                    <div class="item-details">
+                        <h3>Non-Euclidean Coat</h3>
+                        <p>A coat designed with geometric principles that seem to violate the laws of physics.</p>
+                        <p class="item-price">$3,200</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://placehold.co/400x600/png" alt="Paradox Scarf">
+                    <div class="item-details">
+                        <h3>Paradox Scarf</h3>
+                        <p>An accessory that creates visual contradictions when draped around the neck or shoulders.</p>
+                        <p class="item-price">$450</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Materials -->
+            <div class="materials-section">
+                <h2>Innovative Materials</h2>
+                <div class="materials-list">
+                    <div class="material">
+                        <h3>Perceptual Silk</h3>
+                        <p>A custom-developed fabric printed with patterns that create the illusion of movement when static. The printing process involves seven layers of specialized inks that respond differently to various lighting conditions.</p>
+                    </div>
+                    <div class="material">
+                        <h3>Dimensional Wool</h3>
+                        <p>A wool blend treated with heat-reactive elements that shift the apparent depth of the material, creating areas that seem to recede or project from the garment's surface.</p>
+                    </div>
+                    <div class="material">
+                        <h3>Gravitational Cotton</h3>
+                        <p>A heavy cotton treated with nano-scale structures that reflect light in unexpected ways, making the fabric appear to fold in impossible directions.</p>
+                    </div>
+                    <div class="material">
+                        <h3>Mirror Mesh</h3>
+                        <p>A lightweight mesh embedded with microscopic reflective elements that create the illusion of transparency or opacity depending on viewing angle.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="#" class="social-link">Instagram</a>
+            <a href="#" class="social-link">Twitter</a>
+            <a href="#" class="social-link">Pinterest</a>
+            <a href="#" class="social-link">TikTok</a>
+        </div>
+        <p class="copyright">© 2025 marigold.</p>
+    </footer>
+    
+    <script>
+        // Menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+        
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('active');
+            menuToggle.textContent = menu.classList.contains('active') ? 'close' : 'menu';
+        });
+        
+        // Close menu when clicking on a menu item
+        const menuItems = document.querySelectorAll('.menu a');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                menu.classList.remove('active');
+                menuToggle.textContent = 'menu';
+            });
+        });
+        
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+            const heroBackground = document.querySelector('.collection-bg');
+            heroBackground.style.transform = `translateY(${scrollPosition * 0.4}px)`;
+        });
+        
+        // Random text glitch effect for collection title
+        const collectionTitle = document.querySelector('.collection-title');
+        const originalText = collectionTitle.textContent;
+        const chars = '!@#$%^&*()_+-={}[]|;:,.<>?/';
+        
+        function glitchText() {
+            if (Math.random() > 0.95) {
+                let iterations = 0;
+                const interval = setInterval(() => {
+                    collectionTitle.textContent = originalText
+                        .split('')
+                        .map((letter, index) => {
+                            if (index < iterations) {
+                                return originalText[index];
+                            }
+                            return chars[Math.floor(Math.random() * chars.length)];
+                        })
+                        .join('');
+                    
+                    if (iterations >= originalText.length) {
+                        clearInterval(interval);
+                    }
+                    
+                    iterations += 1 / 3;
+                }, 50);
+            }
+        }
+        
+        // Glitch text occasionally
+        setInterval(glitchText, 3000);
+        
+        // Gallery item hover effects
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        
+        galleryItems.forEach(item => {
+            item.addEventListener('mousemove', (e) => {
+                const { left, top, width, height } = item.getBoundingClientRect();
+                const x = (e.clientX - left) / width;
+                const y = (e.clientY - top) / height;
+                
+                const xOffset = (x - 0.5) * 20;
+                const yOffset = (y - 0.5) * 20;
+                
+                const img = item.querySelector('img');
+                img.style.transform = `translate(${xOffset}px, ${yOffset}px) scale(1.1)`;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                const img = item.querySelector('img');
+                img.style.transform = 'translate(0px, 0px) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
