@@ -98,7 +98,7 @@
         .back-button {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 20px;
             background-color: rgba(0, 0, 0, 0.7);
             border: 2px solid #ff00ff;
             color: #ff00ff;
@@ -107,14 +107,14 @@
             text-decoration: none;
             text-transform: uppercase;
             letter-spacing: 2px;
-            transform: rotate(5deg);
+            transform: rotate(-5deg);
             transition: transform 0.3s, background-color 0.3s;
             z-index: 90;
         }
         
         .back-button:hover {
             background-color: rgba(255, 0, 255, 0.3);
-            transform: rotate(-5deg);
+            transform: rotate(5deg);
         }
         
         .collection-hero {
@@ -379,6 +379,78 @@
             z-index: -1;
             pointer-events: none;
         }
+
+
+
+        .language-toggle {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 8px 12px;
+            position: fixed;
+            top: 20px;
+            right: 70px; /* Positioned to the left of the back button */
+            z-index: 91;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px #000;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            transform: rotate(5deg);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .language-toggle:hover {
+            transform: rotate(0deg);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+        }
+        
+        .language-menu {
+            position: fixed;
+            top: 70px;
+            right: 70px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            transform: rotate(3deg) scale(0);
+            transform-origin: top right;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 90;
+        }
+        
+        .language-menu.active {
+            transform: rotate(3deg) scale(1);
+        }
+        
+        .language-menu a {
+            color: #f0f0f0;
+            font-size: 1.2rem;
+            padding: 8px 15px;
+            margin: 5px 0;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s, transform 0.3s;
+        }
+        
+        .language-menu a:hover {
+            color: #ff00ff;
+            transform: skew(-5deg);
+        }
+        
+        .language-menu a.active {
+            color: #00ffff;
+            border-left: 3px solid #00ffff;
+            padding-left: 12px;
+        }
+        
+        /* Adjust back-button position to make room for language toggle */
+        .back-button {
+            left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -387,6 +459,12 @@
     
     <!-- Back Button -->
     <a href="index.html#collections" class="back-button">Back to Collections</a>
+
+    <button class="language-toggle">EN</button>
+    <div class="language-menu">
+        <a href="#" data-lang="en" class="active">English</a>
+        <a href="#" data-lang="mn">Монгол</a>
+    </div>
     
     <!-- Collection Details Content - This will be different for each collection -->
     <section class="collection-details">
@@ -505,83 +583,86 @@
     </footer>
     
     <script>
-        // Menu toggle
-        const menuToggle = document.querySelector('.menu-toggle');
-        const menu = document.querySelector('.menu');
-        
-        menuToggle.addEventListener('click', () => {
-            menu.classList.toggle('active');
-            menuToggle.textContent = menu.classList.contains('active') ? 'close' : 'menu';
-        });
-        
-        // Close menu when clicking on a menu item
-        const menuItems = document.querySelectorAll('.menu a');
-        menuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                menu.classList.remove('active');
-                menuToggle.textContent = 'menu';
-            });
-        });
-        
-        // Parallax effect for hero section
-        window.addEventListener('scroll', () => {
-            const scrollPosition = window.scrollY;
-            const heroBackground = document.querySelector('.collection-bg');
-            heroBackground.style.transform = `translateY(${scrollPosition * 0.4}px)`;
-        });
-        
-        // Random text glitch effect for collection title
-        const collectionTitle = document.querySelector('.collection-title');
-        const originalText = collectionTitle.textContent;
-        const chars = '!@#$%^&*()_+-={}[]|;:,.<>?/';
-        
-        function glitchText() {
-            if (Math.random() > 0.95) {
-                let iterations = 0;
-                const interval = setInterval(() => {
-                    collectionTitle.textContent = originalText
-                        .split('')
-                        .map((letter, index) => {
-                            if (index < iterations) {
-                                return originalText[index];
-                            }
-                            return chars[Math.floor(Math.random() * chars.length)];
-                        })
-                        .join('');
-                    
-                    if (iterations >= originalText.length) {
-                        clearInterval(interval);
-                    }
-                    
-                    iterations += 1 / 3;
-                }, 50);
-            }
+        // Language switcher functionality
+    const languageToggle = document.querySelector('.language-toggle');
+    const languageMenu = document.querySelector('.language-menu');
+    const languageOptions = document.querySelectorAll('.language-menu a');
+    
+    // Toggle language menu
+    languageToggle.addEventListener('click', () => {
+        languageMenu.classList.toggle('active');
+    });
+    
+    // Close language menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!languageToggle.contains(e.target) && !languageMenu.contains(e.target)) {
+            languageMenu.classList.remove('active');
         }
-        
-        // Glitch text occasionally
-        setInterval(glitchText, 3000);
-        
-        // Gallery item hover effects
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        
-        galleryItems.forEach(item => {
-            item.addEventListener('mousemove', (e) => {
-                const { left, top, width, height } = item.getBoundingClientRect();
-                const x = (e.clientX - left) / width;
-                const y = (e.clientY - top) / height;
-                
-                const xOffset = (x - 0.5) * 20;
-                const yOffset = (y - 0.5) * 20;
-                
-                const img = item.querySelector('img');
-                img.style.transform = `translate(${xOffset}px, ${yOffset}px) scale(1.1)`;
-            });
+    });
+    
+    // Language selection
+    languageOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.preventDefault();
             
-            item.addEventListener('mouseleave', () => {
-                const img = item.querySelector('img');
-                img.style.transform = 'translate(0px, 0px) scale(1)';
-            });
+            // Remove active class from all options
+            languageOptions.forEach(item => item.classList.remove('active'));
+            
+            // Add active class to clicked option
+            option.classList.add('active');
+            
+            // Update toggle button text
+            const lang = option.getAttribute('data-lang');
+            languageToggle.textContent = lang.toUpperCase();
+            
+            // Close the menu
+            languageMenu.classList.remove('active');
+            
+            // Change the language
+            changeLanguage(lang);
         });
+    });
+    
+    // Function to change language
+    function changeLanguage(lang) {
+        const translations = {
+            en: {
+                backButton: 'Back to Collections',
+                collectionTitle: 'Distorted Reality',
+                collectionTagline: 'Clothing that bends perception and warps space around the wearer.',
+                conceptTitle: 'The Concept',
+                designerNotesTitle: 'Designer\'s Notes',
+                galleryTitle: 'Key Pieces',
+                materialsTitle: 'Innovative Materials',
+                copyright: '© 2025 TSOVOO. All rights bizarrely reserved.'
+            },
+            mn: {
+                backButton: 'Цуглуулга руу буцах',
+                collectionTitle: 'Гажуудсан Бодит Байдал',
+                collectionTagline: 'Өмсөгчийн эргэн тойрны орон зайг мэдрэмжийг гуйвуулж, мушгидаг хувцас.',
+                conceptTitle: 'Үзэл Баримтлал',
+                designerNotesTitle: 'Дизайнерийн Тэмдэглэл',
+                galleryTitle: 'Гол Бүтээлүүд',
+                materialsTitle: 'Шинэлэг Материалууд',
+                copyright: '© 2025 ЦОВОО. Бүх эрх хачирхалтайгаар хамгаалагдсан.'
+            }
+        };
+        
+        // Update page content
+        if (translations[lang]) {
+            document.querySelector('.back-button').textContent = translations[lang].backButton;
+            document.querySelector('.collection-title').textContent = translations[lang].collectionTitle;
+            document.querySelector('.collection-tagline').textContent = translations[lang].collectionTagline;
+            document.querySelector('.collection-description h2').textContent = translations[lang].conceptTitle;
+            document.querySelector('.designer-notes h2').textContent = translations[lang].designerNotesTitle;
+            document.querySelector('.gallery-title').textContent = translations[lang].galleryTitle;
+            document.querySelector('.materials-section h2').textContent = translations[lang].materialsTitle;
+            document.querySelector('.copyright').textContent = translations[lang].copyright;
+            
+            // Add glitch effect to newly changed text
+            glitchText();
+        }
+    }
     </script>
 </body>
 </html>

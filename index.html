@@ -465,12 +465,100 @@
             z-index: -1;
             pointer-events: none;
         }
+
+        /* LANGUAGE MENU */
+        .language-toggle {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff00ff;
+            color: #ff00ff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 15px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 101;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px #000;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+        .language-toggle {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 8px 12px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 101;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px #000;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            transform: rotate(5deg);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .language-toggle:hover {
+            transform: rotate(0deg);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+        }
+        
+        .language-menu {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            transform: rotate(3deg) scale(0);
+            transform-origin: top right;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 100;
+        }
+        
+        .language-menu.active {
+            transform: rotate(3deg) scale(1);
+        }
+        
+        .language-menu a {
+            color: #f0f0f0;
+            font-size: 1.2rem;
+            padding: 8px 15px;
+            margin: 5px 0;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s, transform 0.3s;
+        }
+        
+        .language-menu a:hover {
+            color: #ff00ff;
+            transform: skew(-5deg);
+        }
+        
+        .language-menu a.active {
+            color: #00ffff;
+            border-left: 3px solid #00ffff;
+            padding-left: 12px;
+        }
     </style>
 </head>
 <body>
     
     <!-- Background Noise -->
     <div class="noise"></div>
+
+    <button class="language-toggle">EN</button>
+    <div class="language-menu">
+        <a href="#" data-lang="en" class="active">English</a>
+        <a href="#" data-lang="mn">Монгол</a>
+    </div>
     
     <!-- Navigation -->
     <nav>
@@ -608,7 +696,12 @@
         
         menuToggle.addEventListener('click', () => {
             menu.classList.toggle('active');
-            menuToggle.textContent = menu.classList.contains('active') ? 'close' : 'menu';
+
+            if(menu.classList.contains('active')) {
+                menuToggle.textContent = 'close';
+            } else {
+                menuToggle.textContent = 'menu';
+            }
         });
         
         // Close menu when clicking on a menu item
@@ -749,6 +842,115 @@
                 menuToggle.style.boxShadow = '0 0 10px rgba(255, 0, 255, 0.5)';
             }, 1000);
         });
+
+        // Language switcher functionality
+    const languageToggle = document.querySelector('.language-toggle');
+    const languageMenu = document.querySelector('.language-menu');
+    const languageOptions = document.querySelectorAll('.language-menu a');
+    
+    // Toggle language menu
+    languageToggle.addEventListener('click', () => {
+        languageMenu.classList.toggle('active');
+    });
+    
+    // Close language menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!languageToggle.contains(e.target) && !languageMenu.contains(e.target)) {
+            languageMenu.classList.remove('active');
+        }
+    });
+    
+    // Language selection
+    languageOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Remove active class from all options
+            languageOptions.forEach(item => item.classList.remove('active'));
+            
+            // Add active class to clicked option
+            option.classList.add('active');
+            
+            // Update toggle button text
+            const lang = option.getAttribute('data-lang');
+            languageToggle.textContent = lang.toUpperCase();
+            
+            // Close the menu
+            languageMenu.classList.remove('active');
+            
+            // Here you would actually change the language
+            // For demonstration purposes, we'll just change some text
+            changeLanguage(lang);
+        });
+    });
+    
+    // Function to change language
+    function changeLanguage(lang) {
+        const translations = {
+            en: {
+                menuToggle: 'menu',
+                menuHome: 'Home',
+                menuCollections: 'Collections',
+                menuAbout: 'About',
+                menuContact: 'Contact',
+                tagline: 'Fashion that defies normality. Clothing that questions reality. Style beyond imagination.',
+                scrollDown: 'Scroll Down',
+                collectionsTitle: 'Our Weird Collections',
+                aboutTitle: 'About Our Weirdness',
+                contactTitle: 'Contact the Void',
+                nameLabel: 'Your Name (or Alias)',
+                emailLabel: 'Email Dimension',
+                messageLabel: 'Your Message to Us',
+                submitButton: 'Transmit',
+                copyright: '© 2025 TSOVOO. All rights bizarrely reserved.'
+            },
+            mn: {
+                menuToggle: 'цэс',
+                menuHome: 'Нүүр',
+                menuCollections: 'Цуглуулга',
+                menuAbout: 'Тухай',
+                menuContact: 'Холбоо барих',
+                tagline: 'Хэвийн бус загвар. Бодит байдлыг асуудаг хувцас. Төсөөллөөс хальсан хэв маяг.',
+                scrollDown: 'Доош гүйлгэ',
+                collectionsTitle: 'Бидний Хачин Цуглуулга',
+                aboutTitle: 'Бидний Хачин Тухай',
+                contactTitle: 'Хоосон Зайтай Холбогдох',
+                nameLabel: 'Таны Нэр (эсвэл Хоч)',
+                emailLabel: 'Имэйл Хаяг',
+                messageLabel: 'Бидэнд Илгээх Зурвас',
+                submitButton: 'Илгээх',
+                copyright: '© 2025 ЦОВОО. Бүх эрх хачирхалтайгаар хамгаалагдсан.'
+            }
+        };
+        
+        // Update page content
+        if (translations[lang]) {
+            document.querySelector('.menu-toggle').textContent = 
+                (menu.classList.contains('active')) ? 'close' : translations[lang].menuToggle;
+            
+            document.querySelectorAll('.menu a')[0].textContent = translations[lang].menuHome;
+            document.querySelectorAll('.menu a')[1].textContent = translations[lang].menuCollections;
+            document.querySelectorAll('.menu a')[2].textContent = translations[lang].menuAbout;
+            document.querySelectorAll('.menu a')[3].textContent = translations[lang].menuContact;
+            
+            document.querySelector('.tagline').textContent = translations[lang].tagline;
+            document.querySelector('.scroll-down').textContent = translations[lang].scrollDown;
+            
+            document.querySelector('#collections h2').textContent = translations[lang].collectionsTitle;
+            document.querySelector('#about h2').textContent = translations[lang].aboutTitle;
+            document.querySelector('#contact h2').textContent = translations[lang].contactTitle;
+            
+            document.querySelector('label[for="name"]').textContent = translations[lang].nameLabel;
+            document.querySelector('label[for="email"]').textContent = translations[lang].emailLabel;
+            document.querySelector('label[for="message"]').textContent = translations[lang].messageLabel;
+            document.querySelector('button[type="submit"]').textContent = translations[lang].submitButton;
+            
+            document.querySelector('.copyright').textContent = translations[lang].copyright;
+            
+            // Add glitch effect to newly changed text
+            scrambleText();
+        }
+    }
     </script>
 </body>
 </html>
